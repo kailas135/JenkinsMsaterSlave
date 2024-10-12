@@ -35,11 +35,10 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                dir("${TERRAFORM_DIR}") { // Ensure TERRAFORM_DIR is defined
-                    script {
+                script {
                         sh 'terraform apply -auto-approve'
                     }
-                }
+                
             }
         }        
     }
