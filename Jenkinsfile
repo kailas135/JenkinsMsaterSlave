@@ -16,5 +16,13 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/kailas135/JenkinsMsaterSlave.git'
             }
         }
-}
+
+    stage('Terraform Init') {
+        steps {
+            script {
+                sh 'terraform init'
+                    }
+                }
+            }
+        }
 }
