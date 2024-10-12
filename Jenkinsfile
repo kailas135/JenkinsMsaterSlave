@@ -32,24 +32,4 @@ pipeline {
                     }
                 }
             }
-        }
-
-    stage('Terraform Apply') {
-        steps {
-            script {
-                sh 'terraform apply -auto-approve'
-                    }
-                }
-            }
-
-    post {
-        always {
-            cleanWs()  // Clean up workspace after the build
-        }
-        success {
-            echo "EKS cluster created successfully"
-        }
-        failure {
-            echo "Failed to create EKS cluster"
-        }
-    }
+}
