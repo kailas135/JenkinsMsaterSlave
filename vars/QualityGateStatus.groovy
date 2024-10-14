@@ -1,16 +1,8 @@
 
+def call(credentialsId){
 
-def call(credentialsId) {
-    // Assuming you already passed the credentials during the SonarQube scan
-    waitForQualityGate abortPipeline: false
+waitForQualityGate abortPipeline: false, credentialsId: credentialsId
+
 }
-
-
-// def call(credentialsId){
-
-// waitForQualityGate abortPipeline: false, credentialsId: credentialsId
-
-
-// }
 
 
