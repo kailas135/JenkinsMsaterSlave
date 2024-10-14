@@ -5,10 +5,11 @@ pipeline {
     }
 
         parameters{
-        choice(name: 'action', choices: 'create\ndelete', description: 'choose create/Destroy' ) 
-        string(name: 'ImageName', description: 'name of the docker build', defaultValue: 'springboot')
-        string(name: 'ImageTag', description: 'tag of the docker build', defaultValue: 'v1')
-        string(name: 'DockerHubUser', description: 'name of the appliction', defaultValue: 'prafullb007')
+        choice(name: 'action', choices: 'create\ndelete', description: 'choose create/Destroy' )
+        string(name: 'aws_account_id', description: 'AWS account ID', defaultValue: '211125400428') 
+        string(name: 'Region', description: 'Region for ECR', defaultValue: 'us-east-1')
+        string(name: 'ECR_REPO_NAME', description: 'Name of the ECR', defaultValue: 'devpractice')
+        //string(name: 'DockerHubUser', description: 'name of the appliction', defaultValue: 'prafullb007')
         }
 
     environment {
@@ -98,6 +99,14 @@ pipeline {
                    
                    mvnBuild()
                }
+            }
+        }
+        stage('Docker Image Build: ECR') {
+            when { expression { params.action == 'create' } }
+            steps {
+                script {
+                    dockerBuild("${params.aws_account_id}", "${params.Region}", "${params.ECR_REPO_NAME}")
+                }
             }
         }
     }
