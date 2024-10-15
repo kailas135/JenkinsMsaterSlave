@@ -9,7 +9,7 @@ pipeline {
         string(name: 'aws_account_id', description: 'AWS account ID', defaultValue: '211125400428') 
         string(name: 'region', description: 'region for ECR', defaultValue: 'us-east-1')
         string(name: 'ECR_REPO_NAME', description: 'Name of the ECR', defaultValue: 'devpractice')
-        string(name: 'cluster', description: 'Name of the EKS cluster', defaultValue: 'my-eks-cluster')
+       // string(name: 'cluster', description: 'Name of the EKS cluster', defaultValue: 'my-eks-cluster')
     }
 
     environment {
