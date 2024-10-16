@@ -130,6 +130,9 @@ pipeline {
             steps {
                 script {
                     dockerImagePush("${params.aws_account_id}", "${params.region}", "${params.ECR_REPO_NAME}")
+                        sh """                          
+                            sed -i "s|${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${ecr_repoName}:${BUILD_NUMBER}|${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${ecr_repoName}:${BUILD_NUMBER}|g" deployment.yaml
+                        """
                 }
             }
         }
@@ -152,9 +155,6 @@ pipeline {
                             curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
                             chmod +x kubectl
                             sudo mv kubectl /usr/local/bin/
-                            sed -i deployment.yaml ${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${ecr_repoName}:${BUILD_NUMBER} ${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${ecr_repoName}:${BUILD_NUMBER} g
-                            sed -i "s|${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${ecr_repoName}:${BUILD_NUMBER}|${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${ecr_repoName}:${BUILD_NUMBER}|g" deployment.yaml
-
                             kubectl apply -f .
                         """
                     }
