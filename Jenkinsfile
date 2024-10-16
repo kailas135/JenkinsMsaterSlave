@@ -17,6 +17,7 @@ pipeline {
         AWS_REGION = "${params.region}"  // Use parameter for dynamic region
         AWS_ACCESS_KEY_ID = credentials('1c458e9c-8554-4334-849c-a7a415a9b559')
         AWS_SECRET_ACCESS_KEY = credentials('1c458e9c-8554-4334-849c-a7a415a9b559')
+        KUBECTL_VERSION = 'v1.31.1'
     } 
 
     stages {
@@ -146,7 +147,7 @@ pipeline {
                     if (apply) {
                         sh """
                             aws eks --region ${params.region} update-kubeconfig --name ${params.cluster}
-                            curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+                            curl -LO "https://dl.k8s.io/release/${env.KUBECTL_VERSION}/bin/linux/amd64/kubectl"
                             chmod +x kubectl
                             sudo mv kubectl /usr/local/bin/
                             kubectl apply -f .
