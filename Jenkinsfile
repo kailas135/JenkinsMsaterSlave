@@ -141,7 +141,7 @@ pipeline {
                         curl -LO "https://dl.k8s.io/release/${env.KUBECTL_VERSION}/bin/linux/amd64/kubectl"
                         chmod +x kubectl
                         sudo mv kubectl /usr/local/bin/
-                        kubectl apply -f .
+                        kubectl apply -f deployment.yaml -f service.yaml
                     """
                     
                 }
