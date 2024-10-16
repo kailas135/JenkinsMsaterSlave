@@ -134,17 +134,6 @@ pipeline {
             }
         }
 
-        stage('Docker Image cleanUp: ECR') {
-            when { 
-                expression { params.action == 'create' } 
-            }
-            steps {
-                script {
-                    dockerImageCleanup("${params.aws_account_id}", "${params.region}", "${params.ECR_REPO_NAME}")
-                }
-            }
-        }
-
         stage('Deployment on EKS Cluster') {
             when { expression { params.action == 'create' } }
             steps {
@@ -173,5 +162,15 @@ pipeline {
             }
         }
 
+        stage('Docker Image cleanUp: ECR') {
+            when { 
+                expression { params.action == 'create' } 
+            }
+            steps {
+                script {
+                    dockerImageCleanup("${params.aws_account_id}", "${params.region}", "${params.ECR_REPO_NAME}")
+                }
+            }
+        }
     }
 }
