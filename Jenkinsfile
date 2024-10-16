@@ -143,7 +143,7 @@ pipeline {
                         sudo mv kubectl /usr/local/bin/
                         kubectl apply -f .
                     """
-                    }
+                    
                 }
             }
         }
