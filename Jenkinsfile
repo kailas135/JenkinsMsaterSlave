@@ -136,22 +136,13 @@ pipeline {
             when { expression { params.action == 'create' } }
             steps {
                 script {
-                    def apply = false
-                    try {
-                        input message: 'Please confirm to deploy on EKS', ok: 'Ready to apply the config?'
-                        apply = true
-                    } catch (err) {
-                        apply = false
-                        currentBuild.result = 'UNSTABLE'
-                    }
-                    if (apply) {
-                        sh """
-                            aws eks --region ${params.region} update-kubeconfig --name ${params.cluster}
-                            curl -LO "https://dl.k8s.io/release/${env.KUBECTL_VERSION}/bin/linux/amd64/kubectl"
-                            chmod +x kubectl
-                            sudo mv kubectl /usr/local/bin/
-                            kubectl apply -f .
-                        """
+                    sh """
+                        aws eks --region ${params.region} update-kubeconfig --name ${params.cluster}
+                        curl -LO "https://dl.k8s.io/release/${env.KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+                        chmod +x kubectl
+                        sudo mv kubectl /usr/local/bin/
+                        kubectl apply -f .
+                    """
                     }
                 }
             }
