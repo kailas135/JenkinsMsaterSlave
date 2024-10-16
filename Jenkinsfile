@@ -51,6 +51,12 @@ pipeline {
             }
         }
 
+        stage('Terraform Destroy') {
+            steps {
+                sh 'terraform destroy -auto-approve'
+            }
+        }
+
         stage('Unit Test Maven') {
             when { 
                 expression { params.action == 'create' } 
