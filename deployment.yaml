@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: myjavaapp
-        image: "${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${ecr_repoName}:${BUILD_NUMBER}"
+        image: 211125400428.dkr.ecr.us-east-1.amazonaws.com/devpractice:67
         ports:
         - containerPort: 8080
 
@@ -31,3 +31,5 @@ spec:
     port: 80
     targetPort: 8080
   type: NodePort
+
+  # image: ${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${ecr_repoName}:${BUILD_NUMBER}
