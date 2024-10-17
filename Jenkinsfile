@@ -149,21 +149,20 @@ pipeline {
                         sudo mv kubectl /usr/local/bin/
                         ls -alh  # List files to check for service.yaml
                         kubectl apply -f deployment.yaml -f service.yaml
-                    """
-                    
+                    """                    
                 }
             }
         }
 
-        stage('Docker Image Cleanup: ECR') {
-            when { 
-                expression { params.action == 'create' } 
-            }
-            steps {
-                script {
-                    dockerImageCleanup("${params.aws_account_id}", "${params.region}", "${params.ECR_REPO_NAME}")
-                }
-            }
-        }
+        // stage('Docker Image Cleanup: ECR') {
+        //     when { 
+        //         expression { params.action == 'create' } 
+        //     }
+        //     steps {
+        //         script {
+        //             dockerImageCleanup("${params.aws_account_id}", "${params.region}", "${params.ECR_REPO_NAME}")
+        //         }
+        //     }
+        // }
     }
 }
