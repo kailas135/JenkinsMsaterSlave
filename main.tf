@@ -2,14 +2,14 @@ provider "aws" {
   region = "us-east-1"  # Replace with your region
 }
 
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 5.0.0"
-    }
-  }
-}
+# terraform {
+#   required_providers {
+#     aws = {
+#       source  = "hashicorp/aws"
+#       version = ">= 5.0.0"
+#     }
+#   }
+# }
 
 # Create the IAM role for EKS
 resource "aws_iam_role" "eks_role" {
