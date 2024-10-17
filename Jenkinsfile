@@ -132,7 +132,7 @@ pipeline {
                 script {
                     dockerImagePush("${params.aws_account_id}", "${params.region}", "${params.ECR_REPO_NAME}")
                     sh """
-                        sed -i "s|${params.aws_account_id}.dkr.ecr.${params.region}.amazonaws.com/${params.ECR_REPO_NAME}:[0-9][0-9]|${params.aws_account_id}.dkr.ecr.${params.region}.amazonaws.com/${params.ECR_REPO_NAME}:${BUILD_NUMBER}|g" deployment.yaml
+                        sed -i "s|${params.aws_account_id}.dkr.ecr.${params.region}.amazonaws.com/${params.ECR_REPO_NAME}:[0-9]*|${params.aws_account_id}.dkr.ecr.${params.region}.amazonaws.com/${params.ECR_REPO_NAME}:${BUILD_NUMBER}|g" deployment.yaml
                     """
                 }
             }
