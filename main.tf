@@ -85,7 +85,7 @@ resource "aws_iam_role_policy_attachment" "ec2_container_registry_read_only" {
 # (Optional) Create a launch template for the EKS nodes to attach your existing key and enable SSM
 resource "aws_launch_template" "eks_node_launch_template" {
   name_prefix   = "eks-node-"
-  image_id      = "ami-0a496f96b2d2e9c3d"
+  image_id      = "ami-0c62a0e1d4cba6a0c"
   instance_type = "t3.medium"
 
   key_name = "test1jenkins"
