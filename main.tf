@@ -1,15 +1,11 @@
 provider "aws" {
-  region = "us-east-1"  # Replace with your region
+  region = "us-east-1"
 }
 
-# terraform {
-#   required_providers {
-#     aws = {
-#       source  = "hashicorp/aws"
-#       version = ">= 5.0.0"
-#     }
-#   }
-# }
+resource "random_string" "suffix" {
+  length  = 6
+  special = false
+}
 
 # Create the IAM role for EKS
 resource "aws_iam_role" "eks_role" {
@@ -26,12 +22,6 @@ resource "aws_iam_role" "eks_role" {
     }]
   })
 }
-
-resource "random_string" "suffix" {
-  length = 6
-  special = false
-}
-
 
 # Attach the AmazonEKSClusterPolicy
 resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
@@ -52,45 +42,27 @@ resource "aws_eks_cluster" "eks" {
 
   vpc_config {
     subnet_ids = [
-    "subnet-03f3cd99a48a2db7c",  # Add your actual subnet IDs here
-    "subnet-001a3b80bd44fbbd4"             # Another subnet ID
-  ]
+      "subnet-03f3cd99a48a2db7c",  # Add your actual subnet IDs here
+      "subnet-001a3b80bd44fbbd4"   # Another subnet ID
+    ]
   }
 
   # Additional cluster configurations can be added here
 }
 
-# (Optional) Create a node group for the EKS cluster
-resource "aws_eks_node_group" "eks_nodes" {
-  cluster_name    = aws_eks_cluster.eks.name
-  node_group_name = "my-eks-node-group"
-  node_role_arn   = aws_iam_role.eks_node_role.arn
-  subnet_ids      = [
-    "subnet-03f3cd99a48a2db7c",  # Add your actual subnet IDs here
-    "subnet-001a3b80bd44fbbd4"   # Another subnet ID
-  ]
-
-  scaling_config {
-    desired_size = 2
-    max_size     = 5
-    min_size     = 1
-  }
-}
-
+# Create the IAM role for EKS nodes
 resource "aws_iam_role" "eks_node_role" {
   name = "eks-node-role"
 
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
+    Version = "2012-10-17",
+    Statement = [{
+      Action = "sts:AssumeRole",
+      Effect = "Allow",
+      Principal = {
+        Service = "ec2.amazonaws.com"
       }
-    ]
+    }]
   })
 }
 
@@ -109,4 +81,45 @@ resource "aws_iam_role_policy_attachment" "ec2_container_registry_read_only" {
   role       = aws_iam_role.eks_node_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
-  # Additional node group configurations can be added here
+
+# (Optional) Create a launch template for the EKS nodes to attach your existing key and enable SSM
+resource "aws_launch_template" "eks_node_launch_template" {
+  name_prefix   = "eks-node-"
+  image_id      = "ami-1234567890abcdef0"
+  instance_type = "t3.medium"
+
+  key_name = "test1jenkins"
+
+  # Enable SSM
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = {
+      Name = "eks-node"
+    }
+  }
+}
+
+# Create a node group for the EKS cluster
+resource "aws_eks_node_group" "eks_nodes" {
+  cluster_name    = aws_eks_cluster.eks.name
+  node_group_name = "my-eks-node-group"
+  node_role_arn   = aws_iam_role.eks_node_role.arn
+  subnet_ids      = [
+    "subnet-03f3cd99a48a2db7c",
+    "subnet-001a3b80bd44fbbd4"
+  ]
+
+  scaling_config {
+    desired_size = 2
+    max_size     = 5
+    min_size     = 1
+  }
+
+  launch_template {
+    id      = aws_launch_template.eks_node_launch_template.id
+    version = "$Latest"
+  }
+
+  depends_on = [aws_eks_cluster.eks]
+}
